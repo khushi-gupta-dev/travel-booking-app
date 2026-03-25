@@ -115,6 +115,7 @@ background-color: white;
     .edit-btn{
         background-color:#fe424d !important;
         border: none !important;
+     
     
     }
 
@@ -127,9 +128,12 @@ background-color: white;
 
     .btns{
         display: flex;
+     
     }
 
     .show-card{
        padding-left: 0;
        padding-right: 0; 
     }
+
+    
