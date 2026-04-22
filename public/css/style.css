@@ -115,8 +115,8 @@ background-color: white;
     .edit-btn{
         background-color:#fe424d !important;
         border: none !important;
-     
-    
+        text-align: center;
+  
     }
 
     /* show page */
@@ -128,12 +128,19 @@ background-color: white;
 
     .btns{
         display: flex;
+        align-items: center;
      
     }
+
+  
 
     .show-card{
        padding-left: 0;
        padding-right: 0; 
     }
 
-    
+/* Fix Delete button */
+.btns form button {
+    width: 150px;  
+}
+
