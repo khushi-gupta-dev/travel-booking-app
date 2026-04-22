@@ -49,6 +49,18 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+const validateListing = (req, res, next) => {
+  let { error } = listingSchema.validate(req.body);
+  
+  if (error) {
+  let errMsg = error.details.map(el => el.message).join(",");
+  throw new ExpressError(400, errMsg);
+}else{
+  next();
+}
+ }
+
+
 app.get("/listings", async (req, res) => {
   const allListings = await Listing.find({});
   res.render("listings/index.ejs", { allListings });
@@ -68,25 +80,12 @@ app.get("/listings/:id", async (req, res) => {
 
 
 
-app.post("/listings",wrapAsync( async (req, res,next) => {
-  if(!req.body.listing){
-    throw new ExpressError(400, "Invalid listing data");
-  }
+app.post("/listings", validateListing, wrapAsync( async (req, res,next) => {
+
      // const { title, description, image, price,country, location } = req.body;
   let listing = req.body.listing;
   const newListing = new Listing(listing);
-  if(!newListing.description){
-    throw new ExpressError(400, "Description is a required field");
-  }
-  if(!newListing.title){
-    throw new ExpressError(400, "Title is a required field");
-  }
-  if(!newListing.price){
-    throw new ExpressError(400, "Price is a required field");
-  }
-  if(!newListing.location){
-    throw new ExpressError(400, "Location is a required field");
-  }
+
   await newListing.save();
   res.redirect("/listings");
   
@@ -101,10 +100,8 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
 }));
 
 
-app.put("/listings/:id", wrapAsync(async (req, res) => {
-  if(!req.body.listing){
-    throw new ExpressError(400, "Invalid listing data");
-  }
+app.put("/listings/:id",validateListing, wrapAsync(async (req, res) => {
+  
   let { id } = req.params;
  
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
