@@ -10,7 +10,7 @@ const ejsMate = require("ejs-mate");
 
 const wrapAsync = require("./utils/wrapAsync");
 const ExpressError = require("./utils/ExpressError.js");
-
+const Review = require("./models/review.js");
 const { listingSchema } = require("./schema.js");
 
 main()
@@ -108,7 +108,7 @@ app.put("/listings/:id",validateListing, wrapAsync(async (req, res) => {
   res.redirect(`/listings/${id}`);
 }));
 
-
+// delete route for listing
 app.delete("/listings/:id",wrapAsync( async (req, res) => {
   let { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
@@ -116,6 +116,21 @@ app.delete("/listings/:id",wrapAsync( async (req, res) => {
   res.redirect("/listings");
 }));
 
+
+
+//reviews
+//post route for reviews
+
+app.post("/listings/:id/reviews", async (req, res) => {
+  let listing = await Listing.findById(req.params.id);
+  let newReview = new Review(req.body.review);
+
+  listing.reviews.push(newReview);
+  await newReview.save();
+  await listing.save();
+
+  res.redirect(`/listings/${listing._id}`);
+})
 
 
 app.use((req, res, next) => {
