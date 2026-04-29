@@ -4,7 +4,7 @@
   <div class="col-8 offset-3">
     <h3><%= listing.title %></h3>
   </div>
-  <div class="card col-6 offset-3 show-card">
+  <div class="card col-6 offset-3 show-card listing-card">
     <% const showImage = listing.image ||
     'https://images.unsplash.com/photo-1773489425315-2b7664fdb068?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
     %>
@@ -67,5 +67,20 @@
 
       <button class="btn btn-outline-dark">Submit</button>
     </form>
+
+    <hr>
+
+    <p><b>All Reviews</b></p>
+    <div class="row">
+  <% for(review of listing.reviews){%>
+<div class="card col-5 ms-3 mb-3">
+  <div class="card-body">
+    <h5>john doe</h5>
+    <p class="card-text"><%= review.comment %></p>
+    <p class="card-text">Rating: <%= review.rating %> / 5</p>
+  </div>
+</div>
+ <% }%>
+ </div>
   </div>
 </div>

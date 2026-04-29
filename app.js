@@ -79,16 +79,19 @@ app.get("/listings/new", (req, res) => {
   res.render("listings/new.ejs");
 });
 
+
+
+//show route
 app.get("/listings/:id", async (req, res) => {
   let { id } = req.params;
-  const listing = await Listing.findById(id);
+  const listing = await Listing.findById(id).populate("reviews");
   res.render("listings/show.ejs", { listing });
 });
 
 
 
 
-
+// create route
 app.post("/listings", validateListing, wrapAsync( async (req, res,next) => {
 
      // const { title, description, image, price,country, location } = req.body;
