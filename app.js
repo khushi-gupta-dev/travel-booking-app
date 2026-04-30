@@ -8,6 +8,8 @@ const MONGO_URI = "mongodb://localhost:27017/wanderlust";
 const ejsMate = require("ejs-mate");
 
 const ExpressError = require("./utils/ExpressError.js");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/review.js");
@@ -31,22 +33,33 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-// app.get("/testListing", async(req, res) => {
-// let sampleListing = new Listing({
-//   title: "Sample Listing",
-//     description: "This is a sample listing for testing purposes.",
-//     price: 1200,
-//     location: "Sample Location",
-//     country: "Sample Country"
-// });
-//     // await sampleListing.save()
-//     console.log("Sample listing saved to database");
-//     res.send("Sample listing created and saved to database");
-// });
+const sessionOptions = {
+  secret: "mysupersecretcode",
+  resave: false,
+  saveUninitialized: true,
+cookie: {
+  expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
+  maxAge: 1000 * 60 * 60 * 24 * 7,// 1 week
+  httpOnly: true, 
+}
+};
+
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+res.locals.error = req.flash("error");
+  next();
+});
+
+
 
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
