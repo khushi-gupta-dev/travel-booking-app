@@ -6,23 +6,24 @@ const Listing = require('../models/listing.js');
 
 const MONGO_URI = "mongodb://localhost:27017/wanderlust";
 
-main()
-    .then(() => {
-    console.log('Connected to MongoDB');
-})
-    .catch(err => {
-    console.error('Error connecting to MongoDB', err);
-})
+
 async function main() {
     await mongoose.connect(MONGO_URI);
+    console.log("Connected to MongoDB");
+    await initDB();
 }
 
 const initDB = async () => {
     await Listing.deleteMany({});
+    const listingsWithOwner = initData.data.map((obj) => ({
+        ...obj,
+        owner: "69f526b2ae4fa243689e56f4",
+    }));
 
-    await Listing.insertMany(initData.data);
-    console.log('Database initialized ');
+    await Listing.insertMany(listingsWithOwner);
+    console.log("Database initialized");
 };
 
-
-initDB();
+main().catch((err) => {
+    console.error("Error connecting to MongoDB", err);
+});

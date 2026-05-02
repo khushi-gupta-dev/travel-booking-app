@@ -9,7 +9,7 @@ router.get("/signup", (req, res) => {
   res.render("users/signup.ejs");
 });
 
-router.post("/signup",wrapAsync(async (req, res) => {
+router.post("/signup",wrapAsync(async (req, res, next) => {
     try {
         let { username, email, password } = req.body;
         const newUser = new User({ email, username });
@@ -19,9 +19,9 @@ router.post("/signup",wrapAsync(async (req, res) => {
             if (err) {
                 return next(err);
             }
+            req.flash("success", "Welcome to Wanderlust!");
+            res.redirect("/listings");
         });
-         req.flash("success", "Welcome to Wanderlust!");
-         res.redirect("/listings");
            
 
  } catch (e) {
@@ -38,13 +38,13 @@ router.get("/login", (req, res) => {
 
 router.post("/login",saveRedirectUrl , passport.authenticate("local", { failureFlash: true, failureRedirect: "/login" }), wrapAsync(async (req, res) => {
     req.flash("success", "Welcome back!");
-    let redirectUrl = req.locals.redirectUrl || "/listings";
+    let redirectUrl = res.locals.redirectUrl || "/listings";
     res.redirect(redirectUrl);
     
 }));
 
 
-router.get("/logout", (req, res) => {
+router.get("/logout", (req, res, next) => {
   req.logout((err)=> {
       if (err) {
         return   next(err);
